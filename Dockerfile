@@ -1,10 +1,10 @@
 FROM php:7.2-fpm
 
 # Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/html/autos/
+COPY composer.lock composer.json /var/www/html/estrategastest/
 
 # Establecer area de trabajo
-WORKDIR /var/www/html/autos/
+WORKDIR /var/www/html/estrategastest/
 
 # Instalar dependencias adicionales
 RUN apt-get update && apt-get install -y \
@@ -36,10 +36,10 @@ RUN groupadd -g 1000 www-datos
 RUN useradd -u 1000 -ms /bin/bash -g www-datos www-datos
 
 # Copie el contenido del directorio de aplicaciones existente
-COPY . /var/www/html/autos/
+COPY . /var/www/html/estrategastest/
 
 # Copiar los permisos del directorio de aplicaciones existentes
-COPY --chown=www-datos:www-datos . /var/www/html/autos/
+COPY --chown=www-datos:www-datos . /var/www/html/estrategastest/
 
 # Cambiar usuario actual a www-datos
 USER www-datos
