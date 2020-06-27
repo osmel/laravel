@@ -96,11 +96,11 @@ volumes:
   dbdata:
     driver: local
  
- dhparam:
-    driver: local
-    driver_opts:
-      type: none
-      device: /var/www/html/estrategastest/dhparam/
-      o: bind
+# dhparam:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: /var/www/html/estrategastest/dhparam/
+#      o: bind
 
 
