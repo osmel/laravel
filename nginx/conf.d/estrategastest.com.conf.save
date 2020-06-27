@@ -1,0 +1,131 @@
+server {
+        listen 80;
+        listen [::]:80;
+
+	   # For https
+	   # listen 443 ssl;
+	   # listen [::]:443 ssl ipv6only=on;
+	   # ssl_certificate /etc/nginx/ssl/default.crt;
+	   # ssl_certificate_key /etc/nginx/ssl/default.key;
+
+
+        server_name estrategastest.com www.estrategastest.com;
+        error_log  /var/log/nginx/error.log;
+        access_log /var/log/nginx/access.log;
+        root /var/www/html/estrategastest/public;
+        index index.php index.html index.htm;
+
+        location / {
+                rewrite ^ https://$host$request_uri? permanent;
+        }
+
+
+
+	    location ~ \.php$ {
+        
+       	 #include fastcgi_params;
+        fastcgi_param HASH_ENCRYPT gtg5igLZasUC3xNfDlvTGBxxkoMuR6FaCYw5;
+        fastcgi_param ENCRYPT_KEY eTkFHqausC34vmldkSrLkMwX13kqpDg1CYOd;
+
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000; #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 256 4k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+
+
+        location ~ /.well-known/acme-challenge {
+          allow all;
+          root /var/www/html/estrategastest/public;
+        }
+
+        location ~ /\.ht {
+            deny all;
+        }
+}
+
+server {
+
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name estrategastest.com www.estrategastest.com;
+
+    server_tokens off;
+
+    ssl_certificate /etc/letsencrypt/live/estrategastest.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/estrategastest.com/privkey.pem;
+
+    ssl_buffer_size 8k;
+
+    ssl_dhparam /etc/ssl/certs/dhparam-2048.pem;
+
+    ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
+    ssl_prefer_server_ciphers on;
+
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+    ssl_ecdh_curve secp384r1;
+    ssl_session_tickets off;
+
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 8.8.8.8;
+
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/html/estrategastest/public;
+    index index.php index.html index.htm;
+
+
+
+
+    location ~ \.php$ {
+        
+        #include fastcgi_params;
+        fastcgi_param HASH_ENCRYPT gtg5igLZasUC3xNfDlvTGBxxkoMuR6FaCYw5;
+        fastcgi_param ENCRYPT_KEY eTkFHqausC34vmldkSrLkMwX13kqpDg1CYOd;
+
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000; #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 256 4k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+
+    }
+
+   
+    location / {
+        #intente servirnos la URL escrita, si no es posible que pruebe la misma URL agregándole un slash ‘/’ 
+        # y si tampoco encuentra nada que nos sirva el archivo de error 404.
+        #try_files $uri $uri/ =404;
+
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+    }
+
+
+
+
+}
+
+
+
