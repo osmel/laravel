@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +24,7 @@ Route::get('/', function () {
 //aqui adentro pongo todas las rutas
 Route::group(['middleware' => ['idiomas']], function () {
 
-	Route::get('lang/{lang}', function ($lang) {
+    Route::get('lang/{lang}', function ($lang) {
         session(['lang' => $lang]);
         return \Redirect::back();
     })->where([ //Limito el valor del parámetro {lang} solo a «en» o «es» para evitar que se asigne a la variable de sesión un idioma que no exista.
@@ -33,8 +33,8 @@ Route::group(['middleware' => ['idiomas']], function () {
 
 
 
-	
-	Route::get('/', 'InicioController@dashboard')
+    
+    Route::get('/', 'InicioController@dashboard')
     ->name('inicio');
 
 
@@ -61,8 +61,23 @@ Route::group(['middleware' => ['idiomas']], function () {
     Auth::routes();
 
     //resultados para la tabla
+    //https://yajrabox.com/docs/laravel-datatables/master/engine-eloquent 
     Route::get('api/midatatable', function () {
-      return datatables()->eloquent(App\User::query())->toJson();
+        $data = request()->all();
+
+
+      return datatables()
+            ->eloquent(App\User::query())
+            ->filter(function ($query) {
+                $cadena = request('search')['value'];                
+                if ($cadena!='') {
+                    $query->where('name', 'like', "%" . request('search')['value'] . "%");
+                    $query->orWhere('email', 'like', "%" . request('search')['value'] . "%");
+                }
+                
+
+            })
+            ->toJson();
     });
 
 
@@ -108,7 +123,7 @@ Route::group(['middleware' => ['idiomas']], function () {
 
 
 
-});	 
+});  
 
 /*
 Auth::routes();
