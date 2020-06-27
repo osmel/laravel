@@ -1,20 +1,56 @@
 server {
         listen 80;
         listen [::]:80;
-<<<<<<< HEAD
+
+	   # For https
+	   # listen 443 ssl;
+	   # listen [::]:443 ssl ipv6only=on;
+	   # ssl_certificate /etc/nginx/ssl/default.crt;
+	   # ssl_certificate_key /etc/nginx/ssl/default.key;
+
+
         server_name estrategastest.com www.estrategastest.com;
         error_log  /var/log/nginx/error.log;
         access_log /var/log/nginx/access.log;
         root /var/www/html/estrategastest/public;
         index index.php index.html index.htm;
 
+        location / {
+                rewrite ^ https://$host$request_uri? permanent;
+        }
+
+
+
+	    location ~ \.php$ {
+        
+       	 #include fastcgi_params;
+        fastcgi_param HASH_ENCRYPT gtg5igLZasUC3xNfDlvTGBxxkoMuR6FaCYw5;
+        fastcgi_param ENCRYPT_KEY eTkFHqausC34vmldkSrLkMwX13kqpDg1CYOd;
+
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass app:9000; #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 256 4k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+
+
         location ~ /.well-known/acme-challenge {
           allow all;
           root /var/www/html/estrategastest/public;
         }
 
-        location / {
-                rewrite ^ https://$host$request_uri? permanent;
+        location ~ /\.ht {
+            deny all;
         }
 }
 
@@ -50,26 +86,9 @@ server {
     access_log /var/log/nginx/access.log;
     root /var/www/html/estrategastest/public;
     index index.php index.html index.htm;
-=======
->>>>>>> e683aabfe31f2fdb5289118805ffd4836d3d5124
-
-	   # For https
-	   # listen 443 ssl;
-	   # listen [::]:443 ssl ipv6only=on;
-	   # ssl_certificate /etc/nginx/ssl/default.crt;
-	   # ssl_certificate_key /etc/nginx/ssl/default.key;
 
 
-        server_name estrategastest.com www.estrategastest.com;
-        error_log  /var/log/nginx/error.log;
-        access_log /var/log/nginx/access.log;
-        root /var/www/html/estrategastest/public;
-        index index.php index.html index.htm;
 
-       location / {
-               # rewrite ^ https://$host$request_uri? permanent;
-		try_files $uri $uri/ /index.php$is_args$args;
-        }
 
     location ~ \.php$ {
         
@@ -93,24 +112,20 @@ server {
 
     }
 
+   
+    location / {
+        #intente servirnos la URL escrita, si no es posible que pruebe la misma URL agregándole un slash ‘/’ 
+        # y si tampoco encuentra nada que nos sirva el archivo de error 404.
+        #try_files $uri $uri/ =404;
 
-        location ~ /\.ht {
-            deny all;
-        }
+        try_files $uri $uri/ /index.php?$query_string;
+        gzip_static on;
+    }
 
-       location ~ /.well-known/acme-challenge {
-          allow all;
-          root /var/www/html/estrategastest/public;
-        }
+
+
 
 }
 
 
 
-
-<<<<<<< HEAD
-}
-
-
-=======
->>>>>>> e683aabfe31f2fdb5289118805ffd4836d3d5124
