@@ -33,7 +33,7 @@
               "serverSide": true,
               "ajax": "/api/midatatable", //"scripts/server_processing.php"
 
-              "pageLength": 5, //numeros de filas por paginas
+              "pageLength": 10, //numeros de filas por paginas
 
               "language": {  //tratamiento de lenguaje
                    "url": "/plugins/dataTables-1.10.21/Plugins/i18n/"+idioma+".lang",
