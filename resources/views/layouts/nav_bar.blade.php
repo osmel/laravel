@@ -10,33 +10,33 @@
                 </button>
 
 
-                
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    {{-- lado izquierdo del Navbar --}}
+                @if (Auth::check()) 
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        {{-- lado izquierdo del Navbar --}}
 
-                  <ul class="navbar-nav mr-auto">
-                      
-                      <li class="nav-item active">
-                        <a class="nav-link" href="#">Usuarios</a>
-                      </li>
-                      <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Catalogos
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <a class="dropdown-item" href="#">uno</a>
-                          <a class="dropdown-item" href="#">dos</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="#">otros</a>
-                        </div>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Deshabilitado</a>
-                      </li>
+                      <ul class="navbar-nav mr-auto">
+                          
+                          <li class="nav-item active">
+                            <a class="nav-link" href="{{ route('users.index') }}">{{ trans('aplicacion.users') }}</a>
+                          </li>
+                          <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              {{ trans('aplicacion.catalogs') }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <a class="dropdown-item" href="#">uno</a>
+                              <a class="dropdown-item" href="#">dos</a>
+                              <div class="dropdown-divider"></div>
+                              <a class="dropdown-item" href="#">otros</a>
+                            </div>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">{{ trans('aplicacion.disabled') }}</a>
+                          </li>
 
 
-                    </ul>
-
+                        </ul>
+                      @endif  
 
                     {{-- lado derecho del Navbar --}}
                     <ul class="navbar-nav ml-auto">
@@ -75,12 +75,15 @@
 
                      <ul class="nav navbar-nav navbar-right">
                             <li class="nav-item dropdown">
-                              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Idioma
+                              <a class="nav-link dropdown-toggle idioma" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                              idioma= "{{ session('lang') }}"
+                              >
+                                {{  ucfirst(session('lang')!='' ? session('lang') : "es")   }}
+                                
                               </a>
-                              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ url('lang', ['es']) }}" >Es</a>
-                                <a class="dropdown-item" href="{{ url('lang', ['en']) }}" >En</a>
+                              <div class="dropdown-menu " aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item " href="{{ url('lang', ['es']) }}" >Español</a>
+                                <a class="dropdown-item " href="{{ url('lang', ['en']) }}" >English</a>
 
 
                               </div>

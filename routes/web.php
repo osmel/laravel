@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +21,8 @@ Route::get('/', function () {
 */
 
 
+//aqui adentro pongo todas las rutas
 Route::group(['middleware' => ['idiomas']], function () {
-	 
-	     //aqui adentro pongo todas las rutas
 
 	Route::get('lang/{lang}', function ($lang) {
         session(['lang' => $lang]);
@@ -32,8 +32,80 @@ Route::group(['middleware' => ['idiomas']], function () {
     ]);
 
 
-	Auth::routes();
-	Route::get('/', 'InicioController@index')->name('inicio');
+
+	
+	Route::get('/', 'InicioController@dashboard')
+    ->name('inicio');
+
+
+    Route::get('/usuarios', 'InicioController@index')
+    ->name('users.index');
+
+       //nuevo
+    Route::get('/usuarios/nuevo', 'InicioController@create') //crear nuevo usuario
+        ->name('users.create');
+    Route::POST('/usuarios/crear', 'InicioController@store') //validacion creacion de nuevo usuario
+        ->name('users.crear');
+
+        //editar
+    Route::get('/usuarios/{user}/editar', 'InicioController@edit') //editar usuario
+        ->name('users.edit');
+    Route::put('/usuarios/{user}', 'InicioController@update'); //validacion edicion de usuario
+
+       //eliminar    
+    Route::get('/eliminar_usuario/{user}', 'InicioController@eliminar_usuario');
+    //Route::delete('/usuarios/{user}', 'InicioController@destroy')->name('users.destroy');
+        
+
+    //Autenticacion
+    Auth::routes();
+
+    //resultados para la tabla
+    Route::get('api/midatatable', function () {
+      return datatables()->eloquent(App\User::query())->toJson();
+    });
+
+
+    //use Illuminate\Support\Facades\Storage;
+
+
+    //resultados para idioma de aplicacion
+    Route::POST('idioma', function () {
+        //$url = Storage::disk('local');
+
+        //$url = "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat";
+
+        //$data = file_get_contents( resource_path('views/inicio.blade.php') );
+
+        $data = file_get_contents( resource_path('lang/es/aplicacion.json') );
+        
+        $data=str_replace('=>',":",$data);
+
+        $data=str_replace('<?php return',"",$data);
+
+        $data=str_replace(']',"}",$data);
+        $data=str_replace('[',"{",$data);
+        $data=str_replace(';',"",$data);
+        $data=str_replace('n',"",$data);
+        
+        $url = '{"a":1,"b":2,"c":3,"d":4,"e":5}';
+
+
+        //dd(  json_encode( $data,true )  ) ;
+        //resources/lang/es
+        //$url = "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat";
+        //$url = Storage::files(  asset('storage/') );
+        
+
+        //
+        //$products = json_decode($data, true);
+        return $data;
+        return  json_encode( (string)$url,true);  
+      //return datatables()->eloquent(App\User::query())->toJson();
+    })->where([ 
+        'lang' => 'en|es'  //
+    ]);
+
 
 
 });	 

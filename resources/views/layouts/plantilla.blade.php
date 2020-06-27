@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {{-- CSRF Token sistema--}}
+    {{-- CSRF Token para todo el sistema--}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Autos') }}</title>
@@ -42,11 +42,16 @@
         {{-- Navegacion--}}
         @include('layouts.nav_bar');
 
-        {{-- Contenido--}}
-        <main class="py-4">
-            @yield('content')
-        </main>
+    <!-- Begin page content -->
+    <main role="main" class="container">
 
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+               @yield('content')
+            </div>
+        
+
+        </div>
     </div>
 
 
